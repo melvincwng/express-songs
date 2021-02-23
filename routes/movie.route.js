@@ -1,6 +1,11 @@
 const express = require("express");
 const router = express.Router();
 
+//DATA
+const movies = [];
+
+// ROUTE PATHS
+// all the route paths here already have the pre-cursor route path /movies as seen in app.js
 router.post("/", (req, res) => {
   let newMovie = {
     id: movies.length + 1,

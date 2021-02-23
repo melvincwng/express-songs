@@ -1,5 +1,5 @@
 const request = require("supertest");
-const app = require("./app");
+const app = require("../app");
 
 describe("App", () => {
     it("POST /songs should add a song and return a new song object", async () => {
@@ -7,7 +7,7 @@ describe("App", () => {
         const expectedSong = { id: 3, name: "Pink Moon", artist: "Nick Drake" };
       
         const response = await request(app)
-          .post("/songs")
+          .post("/songs/")
           .send(newSong)
           .expect(201);
       

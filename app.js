@@ -3,21 +3,6 @@ const app = express();
 app.use(express.json()); //this is a middleware which parses an request object to json object,
 // so we can access it later
 
-const songs = [
-    {
-    "id": 1,
-    "name": "someSongNameeee",
-    "artist": "someSongArtistttt"
-  },
-  {
-    "id": 2,
-    "name": "SUPERTEST",
-    "artist": "somHAHAHeSongArtistttt"
-  },
-];
-
-const movies = [];
-
 /* const songs2 = [
     {
       "name": "someSongName",
@@ -91,6 +76,6 @@ const movieRouter = require("./routes/movie.route");
 
 app.use("/songs", songRouter); // the "/songs" or "/movies" is the common route path 
 app.use("/movies", movieRouter); //which all the routes in that particular module have
-                                // hence for e.g. in song.route.js line 42 -> the route is actually going to the route path /songs + /:id => /songs/:id
+                                // hence for e.g. in song.route.js line 41 -> the route is actually going to the route path /songs + /:id => /songs/:id
 
 module.exports = app; //has to be the bottom of the file

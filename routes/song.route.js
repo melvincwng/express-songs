@@ -1,6 +1,32 @@
 const express = require("express");
 const router = express.Router();
 
+// DATA:
+const songs = [
+    {
+    "id": 1,
+    "name": "someSongNameeee",
+    "artist": "someSongArtistttt"
+  },
+  {
+    "id": 2,
+    "name": "SUPERTEST",
+    "artist": "somHAHAHeSongArtistttt"
+  },
+];
+
+// PARAM PROCESSING:
+// (23.02.2021) lab exercises for https://thoughtworks-sea.github.io/sgunited-guides/#/backend/express-param-processing
+// I commented out the answers for lab exercises for 22.02.2021
+// app.param is for parameter processing
+router.param("id", (req, res, next, id) => {
+    let selectedSong = songs.find((song) => song.id === parseInt(req.params.id));
+    req.song = selectedSong; // place the selectedSong object in the request object
+    next();
+  })
+  
+// ROUTES:
+// all the route paths here already have the pre-cursor route path /songs as seen in app.js
 router.post("/", (req, res) => {
     let newSong = {
         id: songs.length + 1,
@@ -10,15 +36,6 @@ router.post("/", (req, res) => {
     songs.push(newSong)
     res.status(201).json(newSong); //newSong (the song object is an example of res.body)
   });
-
-// (23.02.2021) lab exercises for https://thoughtworks-sea.github.io/sgunited-guides/#/backend/express-param-processing
-// I commented out the answers for lab exercises for 22.02.2021
-// app.param is for parameter processing
-router.param("id", (req, res, next, id) => {
-  let selectedSong = songs.find((song) => song.id === parseInt(req.params.id));
-  req.song = selectedSong; // place the selectedSong object in the request object
-  next();
-})
 
 // can try use array.find() instead => She said it's a better method than using index of song object in the array
 router.get("/:id", (req, res) => {
