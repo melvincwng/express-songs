@@ -16,6 +16,8 @@ const songs = [
   },
 ];
 
+const movies = [];
+
 /* const songs2 = [
     {
       "name": "someSongName",
@@ -84,86 +86,11 @@ app.post("/", requireJsonContent, (req, res, next) => {
   res.status(201).send("Thanks for the JSON!");
 });
 
-app.post("/songs", (req, res) => {
-    let newSong = {
-        id: songs.length + 1,
-        name: req.body.name,
-        artist:req.body.artist
-    }
-    songs.push(newSong)
-    res.status(201).json(newSong); //newSong (the song object is an example of res.body)
-  });
+const songRouter = require("./routes/song.route");
+const movieRouter = require("./routes/movie.route");
 
-// (23.02.2021) lab exercises for https://thoughtworks-sea.github.io/sgunited-guides/#/backend/express-param-processing
-// I commented out the answers for lab exercises for 22.02.2021
-// app.param is for parameter processing
-app.param("id", (req, res, next, id) => {
-  let selectedSong = songs.find((song) => song.id === parseInt(req.params.id));
-  req.song = selectedSong; // place the selectedSong object in the request object
-  next();
-})
-
-// can try use array.find() instead => She said it's a better method than using index of song object in the array
-app.get("/songs/:id", (req, res) => {
-    // const selectedSong = songs[req.params.id - 1]
-    // let selectedSong = songs.find((song) => song.id === parseInt(req.params.id))
-    res.status(200).json(req.song);
-    });
-
-app.put("/songs/:id", (req, res) => {
-    // const selectedSong = songs[req.params.id - 1];
-    // selectedSong.name = req.body.name;
-    // selectedSong.artist = req.body.artist;
-    // res.status(200).json(selectedSong);
-    req.song.name = req.body.name;
-    req.song.artist = req.body.artist;
-    res.status(200).json(req.song);
-    });
-
-// can try use array.find() instead => She said it's a better method than using index of song object in the array
-app.delete("/songs/:id", (req, res) => {
-    // let song = songs.find((song) => song.id === parseInt(req.params.id))
-    // const deletedSong = songs[req.params.id - 1];
-    // let index = songs.indexOf(song);
-    // songs.splice(index, 1)
-    // res.status(200).json(song);
-    let index = songs.indexOf(req.song);
-    songs.splice(index, 1)
-    res.status(200).json(req.song);
-    });
-
-const movies = [];
-
-app.post("/movies", (req, res) => {
-  let newMovie = {
-    id: movies.length + 1,
-    movieName: req.body.movieName,
-  }
-  movies.push(newMovie)
-  res.status(201).json(newMovie);
-
-});
-
-app.get("/movies", (req, res) => {
-  res.status(200).json(movies)
-});
-
-app.get("/movies/:id", (req, res) => {
-  const selectedMovie = movies.find((movie) => movie.id === parseInt(req.params.id))
-  res.status(200).json(selectedMovie)
-});
-
-app.put("/movies/:id", (req, res) => {
-  const selectedMovie = movies.find((movie) => movie.id === parseInt(req.params.id));
-  selectedMovie.movieName = req.body.movieName;
-  res.status(200).json(selectedMovie)
-})
-
-app.delete("/movies/:id", (req, res) => {
-  const selectedMovie = movies.find((movie) => movie.id === parseInt(req.params.id));
-  const index = movies.indexOf(selectedMovie);
-  movies.splice(index, 1)
-  res.status(200).json(selectedMovie)
-})
+app.use("/songs", songRouter); // the "/songs" or "/movies" is the common route path 
+app.use("/movies", movieRouter); //which all the routes in that particular module have
+                                // hence for e.g. in song.route.js line 42 -> the route is actually going to the route path /songs + /:id => /songs/:id
 
 module.exports = app; //has to be the bottom of the file
