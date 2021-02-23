@@ -131,4 +131,38 @@ app.delete("/songs/:id", (req, res) => {
     res.status(200).json(req.song);
     });
 
+const movies = [];
+
+app.post("/movies", (req, res) => {
+  let newMovie = {
+    id: movies.length + 1,
+    movieName: req.body.movieName,
+  }
+  movies.push(newMovie)
+  res.status(201).json(newMovie);
+
+});
+
+app.get("/movies", (req, res) => {
+  res.status(200).json(movies)
+});
+
+app.get("/movies/:id", (req, res) => {
+  const selectedMovie = movies.find((movie) => movie.id === parseInt(req.params.id))
+  res.status(200).json(selectedMovie)
+});
+
+app.put("/movies/:id", (req, res) => {
+  const selectedMovie = movies.find((movie) => movie.id === parseInt(req.params.id));
+  selectedMovie.movieName = req.body.movieName;
+  res.status(200).json(selectedMovie)
+})
+
+app.delete("/movies/:id", (req, res) => {
+  const selectedMovie = movies.find((movie) => movie.id === parseInt(req.params.id));
+  const index = movies.indexOf(selectedMovie);
+  movies.splice(index, 1)
+  res.status(200).json(selectedMovie)
+})
+
 module.exports = app; //has to be the bottom of the file
