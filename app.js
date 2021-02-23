@@ -48,7 +48,8 @@ app.post("/", requireJsonContent, (req, res, next) => {
   
 // IMPORTANT NOTES (22.02.2021)
 // lab answers for https://thoughtworks-sea.github.io/sgunited-guides/#/backend/express-parsing-request-body
-// Remember req.params AND req.body AND req.query
+// Remember req.params AND req.body AND req.query (22.02.2021)
+// Remember res.text => whatever text you are returning back, that's res.text AND res.body => whatever you are returning back, that's res.body(23.02.2021)
 
 // if you see the Route Path is something like "/songs/:id" => this means there is a req.params = { id: some_number }
 // if the URL is ..../songs/1 => this means some_number is "1" (1 in STRING form) hence req.params = { "id": "1" } 
@@ -67,7 +68,7 @@ app.post("/", requireJsonContent, (req, res, next) => {
 // if you see the URL is something like "/songs?type="ROCK", ? means query string
 // this means you will have a req.query object = { type: "ROCK"}
 app.get("/", (req, res) => {
-  res.status(200).send("Hello World")
+  res.status(200).send("Hello World") //"Hello World" is an example of res.text
 })
 
 const requireJsonContent = (req, res, next) => {
@@ -89,11 +90,12 @@ app.post("/songs", (req, res) => {
         artist:req.body.artist
     }
     songs.push(newSong)
-    res.status(201).json(newSong);
+    res.status(201).json(newSong); //newSong (the song object is an example of res.body)
   });
 
 // (23.02.2021) lab exercises for https://thoughtworks-sea.github.io/sgunited-guides/#/backend/express-param-processing
 // I commented out the answers for lab exercises for 22.02.2021
+// app.param is for parameter processing
 app.param("id", (req, res, next, id) => {
   let selectedSong = songs.find((song) => song.id === parseInt(req.params.id));
   req.song = selectedSong; // place the selectedSong object in the request object

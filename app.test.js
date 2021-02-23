@@ -10,7 +10,7 @@ describe("App", () => {
     });
 
     it('POST / should throw error when sending non-json content', async () => {
-        const {text} = await request(app).post("/").send("non-json").expect(400);
+        const {text} = await request(app).post("/").send("non-json").expect(400); //.send('non-json') means we are sending/posting a non-json object
         expect(text).toBe("Server wants application/json!")
     });
 
@@ -59,7 +59,7 @@ describe("App", () => {
     
         const { body: actualSong } = await request(app) //destructing response object
         .put("/songs/3")
-        .send(newSong)
+        .send(newSong) //updating the previous song (with id=3) with the newSong
         .expect(200)
     
         expect(actualSong).toMatchObject(newSong);
