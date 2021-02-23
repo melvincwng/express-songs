@@ -48,8 +48,9 @@ app.post("/", requireJsonContent, (req, res, next) => {
   
 // IMPORTANT NOTES (22.02.2021)
 // lab answers for https://thoughtworks-sea.github.io/sgunited-guides/#/backend/express-parsing-request-body
-// Remember req.params AND req.body AND req.query (22.02.2021)
-// Remember res.text => whatever text you are returning back, that's res.text AND res.body => whatever you are returning back, that's res.body(23.02.2021)
+// Remember 1) req.params AND 2) req.body AND 3) req.query (22.02.2021)
+// Remember 4) res.text => whatever text you are returning back, that's res.text => e.g line 72 "Hello World" is an example of res.text
+// AND 5) res.body => whatever you are returning back, that's res.body => e.g. line 94 newSong is the res.body (23.02.2021)
 
 // if you see the Route Path is something like "/songs/:id" => this means there is a req.params = { id: some_number }
 // if the URL is ..../songs/1 => this means some_number is "1" (1 in STRING form) hence req.params = { "id": "1" } 
