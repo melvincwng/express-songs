@@ -1,7 +1,7 @@
-const request = require("supertest");
+/const request = require("supertest");
 const app = require("../app");
 
-describe("App", () => {
+describe.skip("App", () => {
     it("POST /songs should add a song and return a new song object", async () => {
         const newSong = { name: "Pink Moon", artist: "Nick Drake" };
         const expectedSong = { id: 3, name: "Pink Moon", artist: "Nick Drake" };

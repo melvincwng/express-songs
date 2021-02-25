@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 app.use(express.json()); //this is a middleware which parses an request object to json object,
 // so we can access it later
+require("./utils/db");
 
 app.get("/", (req, res) => {
   res.status(200).send("Hello World") //"Hello World" is an example of res.text
