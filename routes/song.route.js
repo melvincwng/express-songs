@@ -42,6 +42,15 @@ router.param("id", async (req, res, next, id) => {
   
 // ROUTES:
 // all the route paths here already have the pre-cursor route path /songs as seen in app.js
+router.get("/", async (req, res, next) => {
+    try {
+      const songs = await Song.find({}) // find all documents stored in the Song Model
+      res.status(200).json(songs)
+    } catch (err) {
+        next(err)
+    }
+}); 
+
 router.post("/", async (req, res, next) => {
     /* let newSong = {
         id: songs.length + 1,
@@ -49,11 +58,15 @@ router.post("/", async (req, res, next) => {
         artist:req.body.artist
     } */
     try {
-      const newSong = new Song(req.body); //creating an instance of the model -> an instance of a model equals to a document
-      await newSong.save(); //saves the song into database
+      const song = new Song(req.body); //creating an instance of the model -> an instance of a model equals to a document
+      await Song.init(); // make sure indexes are done building
+      const newSong = await song.save(); //saves the song into database
       res.status(201).json(newSong);
     } catch (error) {
-        next(error)
+      if (err.name === "ValidationError") {
+        err.status = 400;
+      };
+      next(error);
     }
     
   // put in the validation logic here
@@ -63,10 +76,10 @@ router.post("/", async (req, res, next) => {
     // 400 Bad Request
     error.statusCode = 400;
     next(error); // goes to app.js the default error handler function at the bottom/
-    }
-    // else if validation is successful => we will push the song into the songs array */
-    // songs.push(newSong)
-   //newSong (the song object is an example of res.body)
+    } else { if validation is successful => we will push the song into the songs array 
+      songs.push(newSong)
+      res.status(201).json(newSong) //newSong is an example of res.body
+    } */
   }); 
 
 // can try use array.find() instead => She said it's a better method than using index of song object in the array

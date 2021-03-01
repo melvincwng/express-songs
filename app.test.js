@@ -3,7 +3,7 @@ const app = require("./app");
 
 // response is an object with text property (i.e. response = { text : ...})
 
-describe("App", () => {
+describe.skip("App", () => {
     it("GET / should respond with Welcome to my homepage", async () => {
       const {text} = await request(app).get("/").expect(200);
       expect(text).toBe("Hello World")  //toBe is lesser stricter than toEqual (toEqual compares type & content VS toBe compares content)
@@ -19,5 +19,5 @@ describe("App", () => {
         expect(text).toBe("Thanks for the JSON!")
     });
       
-  });
+  }); 
   
