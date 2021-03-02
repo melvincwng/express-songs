@@ -12,6 +12,11 @@ describe("songs", () => {
     // hence for the test suites to access 'token' variable, we need to declare it outside first
     // then beforeAll function will run before all the test cases -> to set the value of token with createJWToken(user.username)
 
+    // beforeAll fn will run before ALL the test cases
+    // afterAll fn will run after ALL the test cases
+    // beforeEach fn will run before EACH test case
+    // afterEach fn will run after EACH test case
+    // Refer to jest docs for more info: https://jestjs.io/docs/en/setup-teardown
     beforeAll(async () =>{
       const user = new User({username:"testing123", password:"testing123"});
       await user.save();
