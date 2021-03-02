@@ -2,8 +2,23 @@ const request = require("supertest");
 const app = require("../app");
 const Song = require("../models/song.model");
 const { teardownMongoose } = require("../test/mongoose");
+const User = require("../models/user.model");
+const createJWTToken = require("../src/config/jwt");
 
 describe("songs", () => {
+    let token; // need to declare the token variable first. 
+    // beforeAll is a function -> any variables declared in the function is function-scoped ->
+    // which the test suites cannot access
+    // hence for the test suites to access 'token' variable, we need to declare it outside first
+    // then beforeAll function will run before all the test cases -> to set the value of token with createJWToken(user.username)
+
+    beforeAll(async () =>{
+      const user = new User({username:"testing123", password:"testing123"});
+      await user.save();
+
+      token = createJWTToken(user.username);
+    });
+
     afterAll(async () => await teardownMongoose());
   
     beforeEach(async () => {
@@ -58,24 +73,60 @@ describe("songs", () => {
         expect(response.body.name).toEqual("Song 1");
       });
 
-      it("PUT /songs/:id should update the song and return the song", async () => {
-        const song = await Song.findOne({ name: "Song 1"});
-        const newSong = { name: "Testing", artist: "Testing123"};
+        describe("PUT requests", () => { 
+          it("PUT /songs/:id should throw error when unauthorized user", async () => {
+            const song = await Song.findOne({ name: "Song 1"});
+            const newSong = { name: "Testing", artist: "Testing123"};
+        
+            const response = await request(app)
+            .put(`/songs/${song._id}`)
+            .send(newSong) //updating the first song with the newSong
+            .expect(401)
+            
+            expect(response.status).toBe(401);
+          });
     
-        const response = await request(app)
-        .put(`/songs/${song._id}`)
-        .send(newSong) //updating the first song with the newSong
-        .expect(200)
+          it("PUT /songs/:id should modify correct song successfully if authorised and given valid id", async () => {
+            const song = await Song.findOne({ name: "Song 1"});
+            const newSong = { name: "Testing", artist: "Testing123"};
+        
+            const response = await request(app)
+            .put(`/songs/${song._id}`)
+            .send(newSong) //updating the first song with the newSong
+            .set("Cookie", `token=${token}`) // see more information below
+            .expect(200)
+            
+            //.set('key', 'value') from StackOverFlow
+            // if you see postman, when we send back a request back to server, with the cookie
+            // basically, in the request headers, we are setting the 'key' as 'Cookie' (Setting the Cookie header)
+            // and setting the 'value' with 'token=eyJhbGciOiJIUzI1N...'  (With a value of a JWT token)
+            // hence just pass in those values above in line 96
+            expect(response.status).toBe(200);
+            expect(response.body.name).toBe('Testing')
+            expect(response.body).toMatchObject(newSong)
+          });
+        });
+      
+        describe("DELETE requests", () => { 
+          it("DELETE /songs/:id should throw an error when unauthorized user", async () => {
+            const song = await Song.findOne({ name: "Song 2" })
+            const deletedSong = { name: "Song 2", artist: "Artist 2" };
+        
+            const response = await request(app).delete(`/songs/${song._id}`).expect(401)
+            
+            expect(response.status).toBe(401);
+          });
     
-        expect(response.body).toMatchObject(newSong);
-      });
-
-      it("DELETE /songs/:id should delete the song and return the deleted song", async () => {
-        const song = await Song.findOne({ name: "Song 2" })
-        const deletedSong = { name: "Song 2", artist: "Artist 2" };
-    
-        const response = await request(app).delete(`/songs/${song._id}`).expect(200)
-    
-        expect(response.body).toMatchObject(deletedSong);
-      });
+          it("DELETE /songs/:id should delete the correct song successfully if authorised and given valid id", async () => {
+            const song = await Song.findOne({ name: "Song 2" })
+            const deletedSong = { name: "Song 2", artist: "Artist 2" };
+        
+            const response = await request(app).delete(`/songs/${song._id}`).set("Cookie", `token=${token}`).expect(200)
+            
+            expect(response.status).toBe(200);
+            expect(response.body.name).toBe('Song 2')
+            expect(response.body).toMatchObject(deletedSong)
+          });
+        });
+      
   });
