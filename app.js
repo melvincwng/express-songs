@@ -1,8 +1,11 @@
+require("./utils/db");
 const express = require("express");
 const app = express();
 app.use(express.json()); //this is a middleware which parses an request object to json object,
 // so we can access it later
-require("./utils/db");
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
+require("dotenv").config();
 
 app.get("/", (req, res) => {
   res.status(200).send("Hello World") //"Hello World" is an example of res.text
@@ -22,10 +25,12 @@ app.post("/", requireJsonContent, (req, res, next) => {
 
 const songRouter = require("./routes/song.route");
 const movieRouter = require("./routes/movie.route");
+const userRouter = require("./routes/user.route")
 
 app.use("/songs", songRouter); // the "/songs" or "/movies" is the common route path 
 app.use("/movies", movieRouter); //which all the routes in that particular module have
                                 // hence for e.g. in song.route.js line 41 -> the route is actually going to the route path /songs + /:id => /songs/:id
+app.use("/users", userRouter)
 
 //Error handlers
 //Synchronous error handler
