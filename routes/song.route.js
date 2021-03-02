@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Joi = require("joi");
 const Song = require("../models/song.model"); //replacing joi validation with mongoose validation (25.02.21)
-const jwt = require("jsonwebtoken");
+const protectRoute = require("../middleware/protectRoute");
 
 // DATA:
 /* const songs = [
@@ -89,24 +89,6 @@ router.get("/:id", async (req, res) => {
     // let selectedSong = songs.find((song) => song.id === parseInt(req.params.id))
     res.status(200).json(req.song);
     });
-
-const protectRoute = (req, res, next) => {
-  try {
-    if (!req.cookies.token) {
-      throw new Error("You are not authorized");
-      /* you can set a default error handler in app.js instead and do this:
-      const err = new Error("You are not authorized");
-      next(err);
-      */
-    } else {
-      req.user = jwt.verify(req.cookies.token, process.env.JWT_SECRET_KEY);
-      next();
-    }
-  } catch (err) {
-    err.statusCode = 401;
-    next(err);
-  }
-};
 
 router.put("/:id", protectRoute, async (req, res, next) => { // remember to put in 'next' since if got error, it will act as a middleware fn and pass to the error handler fn
     // const selectedSong = songs[req.params.id - 1];
